@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>آزمون ۱۵ سوالی</title>
+<title>آزمون ریاضی - الگوها و اعداد</title>
 <style>
   *{box-sizing:border-box;}
   body{
@@ -60,6 +60,46 @@
 
   .q-text{font-size:18px; font-weight:700; line-height:1.9; margin-bottom:18px;}
 
+  .pattern-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin: 15px 0;
+    direction: rtl;
+    flex-wrap: wrap;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px dashed #cbd5e1;
+  }
+  .pattern-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    min-width: 80px;
+  }
+  .pattern-shapes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    margin-bottom: 8px;
+    max-width: 120px;
+    min-height: 24px;
+  }
+  .shape-stick { width: 3px; height: 18px; background: #8b5cf6; border-radius: 2px; }
+  .shape-star { font-size: 16px; line-height: 1; }
+  .shape-square { width: 14px; height: 14px; background: #3b82f6; border-radius: 2px; }
+  .shape-chair { font-size: 18px; line-height: 1; }
+  .pattern-label { font-size: 12px; font-weight: 700; color: #1e3c72; text-align: center; }
+  .pattern-arrow { font-size: 22px; color: #94a3b8; font-weight: bold; }
+
   .option{
     display:flex; align-items:center; gap:12px; padding:14px 16px; margin-bottom:11px;
     border:2px solid #e5e7eb; border-radius:13px; cursor:pointer; transition:.15s;
@@ -102,16 +142,14 @@
 
   .top-actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px;}
   .reset{display:block; text-align:center; margin-top:22px; font-size:12px; color:#9ca3af; cursor:pointer; text-decoration:underline;}
-  .note{font-size:12.5px; color:#9ca3af; text-align:center; margin-top:14px; line-height:1.8;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="card">
 
-    <!-- ========== صفحه شروع ========== -->
     <section id="screen-start" class="screen active">
-      <h1>📝 آزمون ۱۵ سوالی</h1>
+      <h1>📝 آزمون ریاضی</h1>
       <p class="sub">نام خود را وارد کنید — زمان آزمون: ۲۵ دقیقه</p>
       <input type="text" id="nameInput" placeholder="نام و نام خانوادگی..." autocomplete="off">
       <button class="btn full" onclick="startQuiz()">شروع آزمون</button>
@@ -120,7 +158,6 @@
       <span class="reset" onclick="resetAll()">بازنشانی اطلاعات (ویژهٔ معلم)</span>
     </section>
 
-    <!-- ========== صفحه سوالات ========== -->
     <section id="screen-quiz" class="screen">
       <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
       <div class="topbar">
@@ -128,6 +165,7 @@
         <div class="timer" id="timerBox">⏱ --:--</div>
       </div>
       <div class="q-text" id="qText"></div>
+      <div id="patternBox"></div>
       <div id="optionsBox"></div>
       <div class="nav">
         <button class="btn ghost small" id="prevBtn" onclick="goPrev()">◀ قبلی</button>
@@ -136,7 +174,6 @@
       </div>
     </section>
 
-    <!-- ========== صفحه کارنامه ========== -->
     <section id="screen-result" class="screen">
       <h1>🎓 کارنامه</h1>
       <p class="sub" id="resultName"></p>
@@ -159,7 +196,6 @@
       </div>
     </section>
 
-    <!-- ========== صفحه پاسخنامه ========== -->
     <section id="screen-key" class="screen">
       <h1>📖 پاسخنامه تشریحی</h1>
       <p class="sub">پاسخ کامل هر سوال همراه با توضیح</p>
@@ -171,90 +207,79 @@
 </div>
 
 <script>
-/* =====================================================================
-   سوالات را اینجا وارد کنید
-   answer : شماره گزینه درست (۰=الف ، ۱=ب ، ۲=ج ، ۳=د)
-   ===================================================================== */
 const QUESTIONS = [
-  { q:"پایتخت ایران کدام شهر است؟",
-    options:["تهران","اصفهان","مشهد","شیراز"], answer:0,
-    explain:"تهران از سال ۱۱۶۴ خورشیدی (دورهٔ آقامحمدخان قاجار) پایتخت ایران شد و تا امروز پایتخت باقی مانده است." },
-
-  { q:"بزرگ‌ترین سیارهٔ منظومهٔ شمسی کدام است؟",
-    options:["زمین","مشتری","زحل","نپتون"], answer:1,
-    explain:"مشتری با قطر حدود ۱۴۳٬۰۰۰ کیلومتر بزرگ‌ترین سیارهٔ منظومهٔ شمسی است." },
-
-  { q:"حاصل ضرب ۷ × ۸ کدام است؟",
-    options:["۴۸","۵۴","۵۶","۶۴"], answer:2,
-    explain:"۷ × ۸ = ۵۶ ." },
-
-  { q:"آب خالص در چند درجهٔ سلسیوس می‌جوشد؟",
-    options:["۵۰","۸۰","۹۰","۱۰۰"], answer:3,
-    explain:"در فشار استاندارد ۱ اتمسفر، آب خالص در ۱۰۰ درجهٔ سلسیوس می‌جوشد." },
-
-  { q:"نویسندهٔ کتاب «گلستان» کیست؟",
-    options:["سعدی","حافظ","فردوسی","مولوی"], answer:0,
-    explain:"شیخ مصلح‌الدین سعدی شیرازی گلستان را در سال ۶۵۶ هجری قمری نوشت." },
-
-  { q:"بزرگ‌ترین اقیانوس جهان کدام است؟",
-    options:["اقیانوس اطلس","اقیانوس هند","اقیانوس آرام","اقیانوس منجمد شمالی"], answer:2,
-    explain:"اقیانوس آرام با مساحتی حدود ۱۶۵ میلیون کیلومتر مربع بزرگ‌ترین اقیانوس زمین است." },
-
-  { q:"یک چندضلعی با ۵ ضلع چه نام دارد؟",
-    options:["مربع","پنج‌ضلعی","شش‌ضلعی","مثلث"], answer:1,
-    explain:"چندضلعی با ۵ ضلع، پنج‌ضلعی (پنتاگون) نامیده می‌شود." },
-
-  { q:"واحد اندازه‌گیری نیرو در سیستم بین‌المللی کدام است؟",
-    options:["ژول","وات","پاسکال","نیوتن"], answer:3,
-    explain:"نیوتن واحد نیرو است و برابر نیرویی است که به جرم ۱ کیلوگرم شتاب ۱ m/s² می‌دهد." },
-
-  { q:"کدام سیاره به «سیارهٔ سرخ» معروف است؟",
-    options:["مریخ","زهره","عطارد","مشتری"], answer:0,
-    explain:"مریخ به دلیل اکسید آهن فراوان در خاکش رنگ سرخ دارد." },
-
-  { q:"پایتخت کشور فرانسه کدام شهر است؟",
-    options:["لندن","پاریس","برلین","رم"], answer:1,
-    explain:"پاریس پایتخت و بزرگ‌ترین شهر فرانسه است." },
-
-  { q:"حاصل تقسیم ۱۲ ÷ ۳ کدام است؟",
-    options:["۳","۴","۵","۶"], answer:1,
-    explain:"۱۲ ÷ ۳ = ۴ ، چون ۳ × ۴ = ۱۲ ." },
-
-  { q:"بیشترین سهم گازهای جوّ زمین مربوط به کدام گاز است؟",
-    options:["اکسیژن","دی‌اکسید کربن","نیتروژن","آرگون"], answer:2,
-    explain:"حدود ۷۸٪ جوّ زمین از نیتروژن تشکیل شده است." },
-
-  { q:"بنیان‌گذار مکتب «مشاء» در فلسفهٔ اسلامی چه کسی است؟",
-    options:["ابن‌سینا","فارابی","ملاصدرا","غزالی"], answer:1,
-    explain:"ابونصر فارابی (معلم ثانی) مکتب مشاء را در جهان اسلام بنیان نهاد." },
-
-  { q:"عنصر اصلی تشکیل‌دهندهٔ الماس چیست؟",
-    options:["سیلیس","کربن","آهن","کلسیم"], answer:1,
-    explain:"الماس شکل دگرگون‌شدهٔ کربن خالص است." },
-
-  { q:"بزرگ‌ترین کشور جهان از نظر وسعت کدام است؟",
-    options:["چین","کانادا","آمریکا","روسیه"], answer:3,
-    explain:"روسیه با وسعتی حدود ۱۷ میلیون کیلومتر مربع بزرگ‌ترین کشور جهان است." }
+  { q:"الگو از راست به چپ: [شکل ۳: ۷ چوب‌کبریت] ← [شکل ۲: ۵ چوب‌کبریت] ← [شکل ۱: ۳ چوب‌کبریت]. شکل چهاردهم این الگو چند چوب‌کبریت دارد؟",
+    options:["۲۷","۲۹","۳۱","۳۳"], answer:1,
+    explain:"رابطه الگو: (شماره شکل × ۲) + ۱ = تعداد چوب‌کبریت. محاسبه: (۱۴ × ۲) + ۱ = ۲۹",
+    pattern: { type: 'stick', counts: [3, 5, 7] } },
+  { q:"الگو از راست به چپ: [شکل ۳: ۱۰ ستاره] ← [شکل ۲: ۷ ستاره] ← [شکل ۱: ۴ ستاره]. شکلی که دارای ۵۲ ستاره است، چندمین شکل این الگو می‌باشد؟",
+    options:["شکل ۱۶","شکل ۱۷","شکل ۱۸","شکل ۱۹"], answer:1,
+    explain:"رابطه الگو: (شماره شکل × ۳) + ۱ = تعداد ستاره. محاسبه معکوس: (۵۲ - ۱) ÷ ۳ = ۱۷",
+    pattern: { type: 'star', counts: [4, 7, 10] } },
+  { q:"الگو از راست به چپ: [شکل ۳: ۱۱ مربع] ← [شکل ۲: ۷ مربع] ← [شکل ۱: ۳ مربع]. رابطه بین شماره شکل و تعداد مربع‌ها کدام است؟",
+    options:["(شماره شکل × ۴) + ۱ = تعداد مربع","(شماره شکل × ۴) - ۱ = تعداد مربع","(شماره شکل × ۳) + ۰ = تعداد مربع","(شماره شکل × ۳) + ۲ = تعداد مربع"], answer:1,
+    explain:"بررسی شکل ۱: (۱ × ۴) - ۱ = ۳. بررسی شکل ۲: (۲ × ۴) - ۱ = ۷.",
+    pattern: { type: 'square', counts: [3, 7, 11] } },
+  { q:"با کارت‌های رقم [۰، ۱، ۲، ۴، ۵، ۷، ۸]، بزرگ‌ترین عدد ۶ رقمی فرد (بدون تکرار ارقام) کدام است؟",
+    options:["۸۷۵۴۲۱","۸۷۵۴۱۲","۸۷۵۲۴۱","۸۷۵۴۱۰"], answer:0,
+    explain:"برای ساخت بزرگ‌ترین عدد، ارقام از بزرگ به کوچک چیده می‌شوند. برای فرد بودن عدد، کوچک‌ترین رقم فرد یعنی ۱ در یکان قرار می‌گیرد." },
+  { q:"با کارت‌های رقم [۰، ۲، ۳، ۵، ۶، ۷، ۹]، بزرگ‌ترین عدد ۵ رقمی بخش‌پذیر بر ۵ که زوج باشد کدام است؟",
+    options:["۹۷۶۵۰","۹۷۶۳۰","۹۷۶۵۲","۹۷۵۳۰"], answer:0,
+    explain:"عددی بر ۵ بخش‌پذیر و زوج است که رقم یکان آن حتماً ۰ باشد. ارقام باقی‌مانده بزرگ‌تر عبارتند از ۹، ۷، ۶، ۵ که عدد ۹۷,۶۵۰ حاصل می‌شود." },
+  { q:"با کارت‌های رقم [۰، ۱، ۳، ۴، ۶، ۷، ۸]، کوچک‌ترین عدد ۵ رقمی بخش‌پذیر بر ۲ و ۵ (هم‌زمان) کدام است؟",
+    options:["۱۰۳۴۶۰","۱۳۴۶۰","۱۰۳۴۶","۱۳۴۰۶"], answer:1,
+    explain:"عددی که هم بر ۲ و هم بر ۵ بخش‌پذیر باشد، رقم یکان آن حتماً ۰ است. ارقام را از کوچک به بزرگ بعد از ۱ می‌چینیم: ۱۳,۴۶۰." },
+  { q:"رقم یکان عددی که هم بر ۲ و هم بر ۵ بخش‌پذیر است، حتماً کدام رقم می‌باشد؟",
+    options:["۲","۵","۰","هر رقم زوجی"], answer:2,
+    explain:"شرط بخش‌پذیری بر ۲ زوج بودن یکان (۰، ۲، ۴، ۶، ۸) و شرط بخش‌پذیری بر ۵ صفر یا ۵ بودن یکان است. رقم مشترک بین این دو فقط ۰ می‌باشد." },
+  { q:"با کارت‌های رقم [۰، ۱، ۲، ۳، ۴، ۵، ۸]، کوچک‌ترین عدد ۶ رقمی بخش‌پذیر بر ۵ که فرد باشد کدام است؟",
+    options:["۱۰۲۳۴۵","۱۲۳۴۵۰","۱۰۲۴۳۵","۰۱۲۳۴۵"], answer:0,
+    explain:"برای بخش‌پذیر بودن بر ۵ و فرد بودن، یکان باید ۵ باشد. ارقام باقی‌مانده را از کوچک به بزرگ بعد از ۱ می‌چینیم: ۱۰۲,۳۴۵." },
+  { q:"حاصل عبارت فرد + (عدد زوج × عدد فرد) = حاصل همواره چگونه عددی است؟",
+    options:["همواره زوج","همواره فرد","گاهی زوج و گاهی فرد","صفر"], answer:1,
+    explain:"عدد زوج = عدد فرد × عدد زوج. عدد فرد = عدد فرد + عدد زوج." },
+  { q:"نهمین مضرب عدد ۳ و ششمین مضرب عدد ۵ به ترتیب کدام‌اند؟",
+    options:["۲۷ و ۳۰","۱۸ و ۳۰","۲۷ و ۳۵","۲۴ و ۲۵"], answer:0,
+    explain:"۹ × ۳ = ۲۷ و ۶ × ۵ = ۳۰" },
+  { q:"در عدد ۶۳,۸۳۱,۵۶۸ اگر عدد در ۱۰۰ ضرب شود، ارزش مکانی رقم ۱ (که در یکان هزار است) به چه مرتبه‌ای منتقل می‌شود؟",
+    options:["دهگان هزار","صدگان هزار","یکان میلیون","دهگان میلیون"], answer:1,
+    explain:"ضرب در ۱۰۰ ارزش مکانی ارقام را ۲ مرتبه به سمت چپ می‌برد: یکان هزار + ۲ مرتبه = صدگان هزار." },
+  { q:"روی محور اعدادی که با واحدهای ۱۰ میلیونی مدرج شده است، عدد ۶۸,۰۰۰,۱۴۹ بین کدام دو نقطه قرار دارد و به کدام نزدیک‌تر است؟",
+    options:["بین ۶۰ و ۷۰ میلیون، نزدیک‌تر به ۷۰ میلیون","بین ۶۰ و ۷۰ میلیون، نزدیک‌تر به ۶۰ میلیون","بین ۷۰ و ۸۰ میلیون، نزدیک‌تر به ۷۰ میلیون","بین ۵۰ و ۶۰ میلیون، نزدیک‌تر به ۶۰ میلیون"], answer:0,
+    explain:"۶۸ میلیون بین ۶۰ و ۷۰ میلیون است و چون از نقطه وسط (۶۵ میلیون) گذشته است، به ۷۰ میلیون نزدیک‌تر می‌باشد." },
+  { q:"باقی‌مانده تقسیم عدد ۴۵,۶۸۳ بر ۲ کدام است؟",
+    options:["۰","۱","۲","۳"], answer:1,
+    explain:"باقی‌مانده تقسیم هر عدد بر ۲ برابر است با باقی‌مانده تقسیم رقم یکان آن بر ۲. چون رقم یکان ۳ است: ۳ ÷ ۲ باقی‌مانده ۱ دارد (عدد فرد است)." },
+  { q:"در مقایسه دو عدد ۱۲,۰۵۸,۳۴۱,۴۱۷ و ۹,۹۹۸,۶۵۳,۷۴۹ کدام عبارت درست است؟",
+    options:["عدد اول بزرگ‌تر است چون ۱۱ رقمی است.","عدد دوم بزرگ‌تر است چون اولین رقم سمت چپ آن ۹ است.","دو عدد برابر هستند.","عدد دوم بزرگ‌تر است چون مجموع ارقامش بیشتر است."], answer:0,
+    explain:"عددی که تعداد ارقام بیشتری دارد (۱۱ رقمی در برابر ۱۰ رقمی) همواره بزرگ‌تر است." },
+  { q:"در صف بوفه مدرسه‌ای ۳۵ نفر ایستاده‌اند. اگر رضا دقیقاً در وسط صف ایستاده باشد، چند نفر قبل از رضا قرار دارند؟",
+    options:["۱۷ نفر","۱۸ نفر","۱۶ نفر","۳۴ نفر"], answer:0,
+    explain:"موقعیت رضا در صف: (۳۵ + ۱) ÷ ۲ = ۱۸ (رضا نفر هجدهم است). تعداد افراد قبل از رضا: ۱۸ - ۱ = ۱۷ نفر." },
+  { q:"الگو از راست به چپ: [شکل ۳: ۸ صندلی] ← [شکل ۲: ۶ صندلی] ← [شکل ۱: ۴ صندلی]. شکل بیستم این الگو چند صندلی دارد؟",
+    options:["۴۰","۴۲","۴۴","۴۶"], answer:1,
+    explain:"رابطه الگو: (شماره شکل × ۲) + ۲ = تعداد صندلی. محاسبه: (۲۰ × ۲) + ۲ = ۴۲",
+    pattern: { type: 'chair', counts: [4, 6, 8] } },
+  { q:"الگو از راست به چپ: [شکل ۳: ۱۳ چوب‌کبریت] ← [شکل ۲: ۸ چوب‌کبریت] ← [شکل ۱: ۳ چوب‌کبریت]. شکلی که دارای ۹۸ چوب‌کبریت است، چندمین شکل این الگو می‌باشد؟",
+    options:["۱۹","۲۰","۲۱","۲۲"], answer:1,
+    explain:"رابطه الگو: (شماره شکل × ۵) - ۲ = تعداد چوب‌کبریت. محاسبه معکوس: (۹۸ + ۲) ÷ ۵ = ۲۰",
+    pattern: { type: 'stick', counts: [3, 8, 13] } }
 ];
 
-/* ==================== تنظیمات ==================== */
-const LOCK_HOURS    = 2;                                  // قفل پاسخنامه: ۲ ساعت
-const LOCK_MS       = LOCK_HOURS * 60 * 60 * 1000;
-const QUIZ_MINUTES  = 25;                                 // زمان آزمون: ۲۵ دقیقه
-const QUIZ_MS       = QUIZ_MINUTES * 60 * 1000;
+const LOCK_HOURS = 2;
+const LOCK_MS = LOCK_HOURS * 60 * 60 * 1000;
+const QUIZ_MINUTES = 25;
+const QUIZ_MS = QUIZ_MINUTES * 60 * 1000;
+const K_START = 'azmoon_math_start_time';
+const K_ATTEMPTS = 'azmoon_math_attempts';
 
-const K_START       = 'azmoon_start_time';                // زمان اولین شروع (فقط یک‌بار ثبت می‌شود)
-const K_ATTEMPTS    = 'azmoon_attempts';                  // تعداد دفعات انجام
+let studentName = '';
+let current = 0;
+let userAnswers = new Array(QUESTIONS.length).fill(null);
+let timerInterval = null;
+let quizDeadline = 0;
+let quizActive = false;
 
-/* ==================== متغیرهای جاری ==================== */
-let studentName    = '';
-let current        = 0;
-let userAnswers    = new Array(QUESTIONS.length).fill(null);
-let timerInterval  = null;
-let quizDeadline   = 0;
-let quizActive     = false;
-
-/* ==================== ابزار کمکی ==================== */
 const toFa = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const LETTERS = ['الف','ب','ج','د'];
 
@@ -263,7 +288,6 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
 }
-
 function fmtRemain(ms){
   const t = Math.ceil(ms/1000);
   const h = Math.floor(t/3600), m = Math.floor((t%3600)/60), s = t%60;
@@ -273,14 +297,37 @@ function fmtRemain(ms){
   parts.push(`${s} ثانیه`);
   return toFa(parts.join(' و '));
 }
-
 function fmtClock(ms){
   const t = Math.max(0, Math.ceil(ms/1000));
   const m = Math.floor(t/60), s = t%60;
   return toFa(String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'));
 }
 
-/* ==================== مدیریت قفل پاسخنامه ==================== */
+function renderPatternHTML(pattern) {
+  if (!pattern) return '';
+  const reversedCounts = [...pattern.counts].reverse();
+  let html = '<div class="pattern-container">';
+  reversedCounts.forEach((count, index) => {
+    const shapeIndex = pattern.counts.length - 1 - index;
+    let shapesHtml = '';
+    const renderLimit = 20;
+    const actualCount = Math.min(count, renderLimit);
+    for (let j = 0; j < actualCount; j++) {
+      if (pattern.type === 'stick') shapesHtml += '<div class="shape-stick"></div>';
+      else if (pattern.type === 'star') shapesHtml += '<span class="shape-star">⭐</span>';
+      else if (pattern.type === 'square') shapesHtml += '<div class="shape-square"></div>';
+      else if (pattern.type === 'chair') shapesHtml += '<span class="shape-chair">🪑</span>';
+    }
+    if (count > renderLimit) {
+      shapesHtml += `<span style="font-size:11px; color:#9ca3af; margin-right:4px;">... +${toFa(count - renderLimit)}</span>`;
+    }
+    html += `<div class="pattern-item"><div class="pattern-shapes">${shapesHtml}</div><div class="pattern-label">شکل ${toFa(shapeIndex + 1)}: ${toFa(count)}</div></div>`;
+    if (index < reversedCounts.length - 1) html += '<div class="pattern-arrow">←</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
 function unlockTime(){
   const st = Number(localStorage.getItem(K_START) || 0);
   return st ? st + LOCK_MS : 0;
@@ -294,7 +341,6 @@ function updateLockUI(){
   const boxes = document.querySelectorAll('.lockStatus');
   const unlocked = isUnlocked();
   let msg;
-
   if(!localStorage.getItem(K_START)){
     msg = '🔒 پاسخنامه ۲ ساعت بعد از اولین شروع آزمون فعال می‌شود.';
   } else if(unlocked){
@@ -302,64 +348,51 @@ function updateLockUI(){
   } else {
     msg = '🔒 پاسخنامه تا ' + fmtRemain(unlockTime() - Date.now()) + ' دیگر فعال می‌شود.';
   }
-
   boxes.forEach(b => {
     b.textContent = msg;
-    b.style.background  = unlocked ? '#dcfce7' : '#fff7ed';
-    b.style.color       = unlocked ? '#166534' : '#9a3412';
+    b.style.background = unlocked ? '#dcfce7' : '#fff7ed';
+    b.style.color = unlocked ? '#166534' : '#9a3412';
     b.style.borderColor = unlocked ? '#86efac' : '#fed7aa';
   });
-
   document.querySelectorAll('.answerKeyBtn').forEach(btn => {
     btn.disabled = !unlocked;
     btn.textContent = unlocked ? '📖 مشاهده پاسخنامه' : '🔒 پاسخنامه (قفل)';
   });
 }
 
-/* ==================== تایمر آزمون ==================== */
 function startTimer(){
   clearInterval(timerInterval);
   quizDeadline = Date.now() + QUIZ_MS;
-  quizActive   = true;
+  quizActive = true;
   tickTimer();
   timerInterval = setInterval(tickTimer, 500);
 }
-
 function tickTimer(){
   if(!quizActive) return;
   const left = quizDeadline - Date.now();
-  const box  = document.getElementById('timerBox');
+  const box = document.getElementById('timerBox');
   box.textContent = '⏱ ' + fmtClock(left);
   box.classList.toggle('warn', left <= 60 * 1000);
   if(left <= 0){
     quizActive = false;
     clearInterval(timerInterval);
-    finishQuiz(true);   // پایان خودکار
+    finishQuiz(true);
   }
 }
-
 function stopTimer(){
   quizActive = false;
   clearInterval(timerInterval);
   timerInterval = null;
 }
 
-/* ==================== جریان آزمون ==================== */
 function startQuiz(){
   const name = document.getElementById('nameInput').value.trim();
   if(!name){ alert('لطفاً نام و نام خانوادگی خود را وارد کنید.'); return; }
-
   studentName = name;
-
-  // زمان اولین شروع فقط یک‌بار ثبت می‌شود → بازی مجدد قفل را باز نمی‌کند
-  if(!localStorage.getItem(K_START)){
-    localStorage.setItem(K_START, Date.now());
-  }
-
+  if(!localStorage.getItem(K_START)) localStorage.setItem(K_START, Date.now());
   current = 0;
   userAnswers = new Array(QUESTIONS.length).fill(null);
   document.getElementById('timerBox').classList.remove('warn');
-
   updateLockUI();
   showScreen('screen-quiz');
   renderQuestion();
@@ -368,14 +401,10 @@ function startQuiz(){
 
 function renderQuestion(){
   const q = QUESTIONS[current];
-
-  document.getElementById('qCounter').textContent =
-    `سوال ${toFa(current+1)} از ${toFa(QUESTIONS.length)}`;
-  document.getElementById('progressBar').style.width =
-    ((current+1) / QUESTIONS.length * 100) + '%';
-
+  document.getElementById('qCounter').textContent = `سوال ${toFa(current+1)} از ${toFa(QUESTIONS.length)}`;
+  document.getElementById('progressBar').style.width = ((current+1) / QUESTIONS.length * 100) + '%';
   document.getElementById('qText').innerHTML = q.q;
-
+  document.getElementById('patternBox').innerHTML = renderPatternHTML(q.pattern);
   const box = document.getElementById('optionsBox');
   box.innerHTML = '';
   q.options.forEach((opt, i) => {
@@ -385,9 +414,8 @@ function renderQuestion(){
     d.onclick = () => { userAnswers[current] = i; renderQuestion(); };
     box.appendChild(d);
   });
-
   document.getElementById('prevBtn').disabled = (current === 0);
-  document.getElementById('nextBtn').style.display   = (current === QUESTIONS.length-1) ? 'none' : 'inline-block';
+  document.getElementById('nextBtn').style.display = (current === QUESTIONS.length-1) ? 'none' : 'inline-block';
   document.getElementById('finishBtn').style.display = (current === QUESTIONS.length-1) ? 'inline-block' : 'none';
 }
 
@@ -396,11 +424,9 @@ function goNext(){ if(current < QUESTIONS.length-1){ current++; renderQuestion()
 
 function finishQuiz(auto){
   stopTimer();
-
   if(!auto){
     const empty = userAnswers.filter(a => a === null).length;
     if(empty > 0 && !confirm(`${toFa(empty)} سوال بی‌پاسخ مانده است. آیا از پایان آزمون مطمئن هستید؟`)) {
-      // اگر منصرف شد، تایمر را دوباره راه بینداز
       if(quizDeadline > Date.now()){
         quizActive = true;
         timerInterval = setInterval(tickTimer, 500);
@@ -410,31 +436,23 @@ function finishQuiz(auto){
   } else {
     alert('⏰ زمان آزمون به پایان رسید. پاسخ‌های شما به‌صورت خودکار ثبت شد.');
   }
-
   let correct = 0;
   userAnswers.forEach((a, i) => { if(a === QUESTIONS[i].answer) correct++; });
-
-  const wrong   = userAnswers.filter((a,i) => a !== null && a !== QUESTIONS[i].answer).length;
-  const empty   = userAnswers.filter(a => a === null).length;
+  const wrong = userAnswers.filter((a,i) => a !== null && a !== QUESTIONS[i].answer).length;
+  const empty = userAnswers.filter(a => a === null).length;
   const percent = Math.round(correct / QUESTIONS.length * 100);
-  const score   = Math.round(correct / QUESTIONS.length * 20 * 100) / 100;
-
+  const score = Math.round(correct / QUESTIONS.length * 20 * 100) / 100;
   const attempts = Number(localStorage.getItem(K_ATTEMPTS) || 0) + 1;
   localStorage.setItem(K_ATTEMPTS, attempts);
-
   document.getElementById('resultName').textContent = `دانش‌آموز: ${studentName}`;
-  document.getElementById('scoreNum').textContent   = toFa(score);
-  document.getElementById('rCorrect').textContent   = `${toFa(correct)} از ${toFa(QUESTIONS.length)}`;
-  document.getElementById('rWrong').textContent     = toFa(wrong);
-  document.getElementById('rEmpty').textContent     = toFa(empty);
-  document.getElementById('rPercent').textContent   = toFa(percent) + '٪';
-  document.getElementById('rAttempts').textContent  = toFa(attempts) + ' بار';
-
+  document.getElementById('scoreNum').textContent = toFa(score);
+  document.getElementById('rCorrect').textContent = `${toFa(correct)} از ${toFa(QUESTIONS.length)}`;
+  document.getElementById('rWrong').textContent = toFa(wrong);
+  document.getElementById('rEmpty').textContent = toFa(empty);
+  document.getElementById('rPercent').textContent = toFa(percent) + '٪';
+  document.getElementById('rAttempts').textContent = toFa(attempts) + ' بار';
   const now = new Date();
-  document.getElementById('rDate').textContent =
-    now.toLocaleDateString('fa-IR') + ' - ' +
-    toFa(now.toLocaleTimeString('fa-IR', {hour:'2-digit', minute:'2-digit'}));
-
+  document.getElementById('rDate').textContent = now.toLocaleDateString('fa-IR') + ' - ' + toFa(now.toLocaleTimeString('fa-IR', {hour:'2-digit', minute:'2-digit'}));
   updateLockUI();
   showScreen('screen-result');
 }
@@ -448,50 +466,37 @@ function backToStart(){
   showScreen('screen-start');
 }
 
-/* ==================== پاسخنامه ==================== */
 function openAnswerKey(){
   if(!isUnlocked()){
-    if(!localStorage.getItem(K_START)){
-      alert('ابتدا باید تمرین را شروع کنید.');
-    } else {
-      alert('پاسخنامه تا ' + fmtRemain(unlockTime() - Date.now()) + ' دیگر فعال می‌شود.');
-    }
+    if(!localStorage.getItem(K_START)) alert('ابتدا باید تمرین را شروع کنید.');
+    else alert('پاسخنامه تا ' + fmtRemain(unlockTime() - Date.now()) + ' دیگر فعال می‌شود.');
     return;
   }
-
   const box = document.getElementById('keyBox');
   box.innerHTML = '';
-
   QUESTIONS.forEach((q, i) => {
     const ua = userAnswers[i];
     const div = document.createElement('div');
     div.className = 'ak-item';
-
     let html = `<div class="ak-q">${toFa(i+1)}) ${q.q}</div>`;
-
+    if (q.pattern) html += renderPatternHTML(q.pattern);
     q.options.forEach((opt, j) => {
       let cls = 'ak-opt';
       let tag = '';
       if(j === q.answer){ cls += ' correct'; tag = '<span class="tag ok">پاسخ صحیح</span>'; }
-      else if(j === ua){ cls += ' wrong';  tag = '<span class="tag no">پاسخ شما</span>'; }
+      else if(j === ua){ cls += ' wrong'; tag = '<span class="tag no">پاسخ شما</span>'; }
       html += `<div class="${cls}">${LETTERS[j]}) ${opt} ${tag}</div>`;
     });
-
-    if(ua === null){
-      html += `<div class="ak-exp" style="background:#fef2f2;color:#991b1b;border-color:#dc2626">⚠️ شما به این سوال پاسخ نداده‌اید.</div>`;
-    }
-
+    if(ua === null) html += `<div class="ak-exp" style="background:#fef2f2;color:#991b1b;border-color:#dc2626">⚠️ شما به این سوال پاسخ نداده‌اید.</div>`;
     html += `<div class="ak-exp"><b>توضیح:</b> ${q.explain}</div>`;
     div.innerHTML = html;
     box.appendChild(div);
   });
-
   showScreen('screen-key');
 }
 
-/* ==================== بازنشانی ==================== */
 function resetAll(){
-  if(!confirm('همهٔ اطلاعات (زمان اولین شروع، تعداد دفعات، قفل پاسخنامه) پاک شود؟')) return;
+  if(!confirm('همهٔ اطلاعات پاک شود؟')) return;
   localStorage.removeItem(K_START);
   localStorage.removeItem(K_ATTEMPTS);
   stopTimer();
@@ -501,9 +506,8 @@ function resetAll(){
   alert('اطلاعات بازنشانی شد.');
 }
 
-/* ==================== راه‌اندازی ==================== */
 setInterval(updateLockUI, 1000);
 updateLockUI();
 </script>
 </body>
-  </html>
+ </html>
