@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>آزمون ۱۵ سوالی</title>
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; padding:20px;
+    font-family: Vazirmatn, Tahoma, "Segoe UI", sans-serif;
+    background: linear-gradient(135deg,#1e3c72,#2a5298 60%,#6b46c1);
+    display:flex; align-items:center; justify-content:center;
+    color:#1f2937;
+  }
+  .wrap{width:100%; max-width:780px;}
+  .card{
+    background:#fff; border-radius:20px; padding:30px;
+    box-shadow:0 25px 60px rgba(0,0,0,.35);
+  }
+  .screen{display:none; animation:fade .3s ease;}
+  .screen.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  h1{font-size:24px; margin:0 0 6px; text-align:center; color:#1e3c72;}
+  .sub{text-align:center; color:#6b7280; font-size:14px; margin-bottom:24px;}
+
+  input[type=text]{
+    width:100%; padding:14px 16px; border:2px solid #e5e7eb; border-radius:12px;
+    font-size:16px; font-family:inherit; outline:none; transition:.2s;
+  }
+  input[type=text]:focus{border-color:#2a5298; box-shadow:0 0 0 4px rgba(42,82,152,.12);}
+
+  .btn{
+    display:inline-block; border:none; cursor:pointer; font-family:inherit;
+    padding:13px 26px; border-radius:12px; font-size:16px; font-weight:700;
+    background:linear-gradient(135deg,#2a5298,#6b46c1); color:#fff; transition:.2s;
+    box-shadow:0 6px 18px rgba(42,82,152,.3);
+  }
+  .btn:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(42,82,152,.4);}
+  .btn:disabled{background:#cbd5e1; color:#94a3b8; cursor:not-allowed; box-shadow:none; transform:none;}
+  .btn.ghost{background:#fff; color:#2a5298; border:2px solid #c7d2fe; box-shadow:none;}
+  .btn.ghost:hover{background:#eef2ff;}
+  .btn.small{padding:9px 18px; font-size:14px;}
+  .btn.full{width:100%; margin-top:20px;}
+
+  .progress-wrap{background:#eef2ff; height:10px; border-radius:99px; overflow:hidden; margin-bottom:8px;}
+  .progress-bar{height:100%; width:0; background:linear-gradient(90deg,#2a5298,#6b46c1); transition:width .3s;}
+  .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:10px;}
+  .counter{font-size:13px; color:#6b7280;}
+
+  .timer{
+    font-size:15px; font-weight:800; color:#1e3c72;
+    background:#eef2ff; padding:6px 14px; border-radius:99px;
+    border:1px solid #c7d2fe; letter-spacing:1px; min-width:110px; text-align:center;
+    transition:.2s;
+  }
+  .timer.warn{background:#fee2e2; color:#991b1b; border-color:#fca5a5; animation:pulse 1s infinite;}
+  @keyframes pulse{50%{opacity:.55;}}
+
+  .q-text{font-size:18px; font-weight:700; line-height:1.9; margin-bottom:18px;}
+
+  .option{
+    display:flex; align-items:center; gap:12px; padding:14px 16px; margin-bottom:11px;
+    border:2px solid #e5e7eb; border-radius:13px; cursor:pointer; transition:.15s;
+    font-size:15.5px; line-height:1.7;
+  }
+  .option:hover{border-color:#a5b4fc; background:#f8faff;}
+  .option.selected{border-color:#2a5298; background:#eef2ff; box-shadow:0 0 0 3px rgba(42,82,152,.1);}
+  .badge{
+    flex:0 0 32px; height:32px; border-radius:50%; background:#eef2ff; color:#2a5298;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;
+  }
+  .option.selected .badge{background:#2a5298; color:#fff;}
+
+  .nav{display:flex; gap:10px; justify-content:space-between; margin-top:22px;}
+
+  .lockStatus{
+    margin-top:16px; padding:12px 16px; border-radius:12px; font-size:13.5px;
+    background:#fff7ed; color:#9a3412; border:1px solid #fed7aa; text-align:center;
+  }
+
+  .score-box{text-align:center; padding:24px; border-radius:16px; background:linear-gradient(135deg,#eef2ff,#f5f3ff); margin-bottom:18px;}
+  .score-num{font-size:52px; font-weight:800; color:#2a5298; line-height:1.1;}
+  .score-lbl{color:#6b7280; font-size:14px; margin-top:4px;}
+
+  .rows{border:1px solid #e5e7eb; border-radius:14px; overflow:hidden;}
+  .row{display:flex; justify-content:space-between; padding:13px 16px; font-size:15px; border-bottom:1px solid #f1f5f9;}
+  .row:last-child{border-bottom:none;}
+  .row:nth-child(odd){background:#fafbff;}
+  .row b{color:#1e3c72;}
+
+  .ak-item{border:1px solid #e5e7eb; border-radius:14px; padding:16px; margin-bottom:14px;}
+  .ak-q{font-weight:700; margin-bottom:10px; line-height:1.8;}
+  .ak-opt{padding:8px 12px; border-radius:9px; margin-bottom:6px; font-size:14.5px; background:#f8fafc; line-height:1.7;}
+  .ak-opt.correct{background:#dcfce7; color:#166534; font-weight:700; border:1px solid #86efac;}
+  .ak-opt.wrong{background:#fee2e2; color:#991b1b; border:1px solid #fca5a5;}
+  .ak-exp{margin-top:10px; padding:11px 14px; border-radius:10px; background:#eff6ff; color:#1e40af; font-size:14px; line-height:1.9; border-right:4px solid #2a5298;}
+  .tag{font-size:11.5px; padding:2px 9px; border-radius:99px; margin-right:6px;}
+  .tag.ok{background:#166534; color:#fff;}
+  .tag.no{background:#991b1b; color:#fff;}
+
+  .top-actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px;}
+  .reset{display:block; text-align:center; margin-top:22px; font-size:12px; color:#9ca3af; cursor:pointer; text-decoration:underline;}
+  .note{font-size:12.5px; color:#9ca3af; text-align:center; margin-top:14px; line-height:1.8;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <!-- ========== صفحه شروع ========== -->
+    <section id="screen-start" class="screen active">
+      <h1>📝 آزمون ۱۵ سوالی</h1>
+      <p class="sub">نام خود را وارد کنید — زمان آزمون: ۲۵ دقیقه</p>
+      <input type="text" id="nameInput" placeholder="نام و نام خانوادگی..." autocomplete="off">
+      <button class="btn full" onclick="startQuiz()">شروع آزمون</button>
+      <div class="lockStatus"></div>
+      <button class="btn ghost full answerKeyBtn" onclick="openAnswerKey()" disabled>🔒 مشاهده پاسخنامه</button>
+      <span class="reset" onclick="resetAll()">بازنشانی اطلاعات (ویژهٔ معلم)</span>
+    </section>
+
+    <!-- ========== صفحه سوالات ========== -->
+    <section id="screen-quiz" class="screen">
+      <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="topbar">
+        <div class="counter" id="qCounter"></div>
+        <div class="timer" id="timerBox">⏱ --:--</div>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div id="optionsBox"></div>
+      <div class="nav">
+        <button class="btn ghost small" id="prevBtn" onclick="goPrev()">◀ قبلی</button>
+        <button class="btn ghost small" id="nextBtn" onclick="goNext()">بعدی ▶</button>
+        <button class="btn small" id="finishBtn" onclick="finishQuiz(false)">پایان و مشاهده کارنامه</button>
+      </div>
+    </section>
+
+    <!-- ========== صفحه کارنامه ========== -->
+    <section id="screen-result" class="screen">
+      <h1>🎓 کارنامه</h1>
+      <p class="sub" id="resultName"></p>
+      <div class="score-box">
+        <div class="score-num" id="scoreNum"></div>
+        <div class="score-lbl">نمره از ۲۰</div>
+      </div>
+      <div class="rows">
+        <div class="row"><span>تعداد پاسخ صحیح</span><b id="rCorrect"></b></div>
+        <div class="row"><span>تعداد پاسخ غلط</span><b id="rWrong"></b></div>
+        <div class="row"><span>تعداد بی‌پاسخ</span><b id="rEmpty"></b></div>
+        <div class="row"><span>درصد موفقیت</span><b id="rPercent"></b></div>
+        <div class="row"><span>تعداد دفعات انجام تمرین</span><b id="rAttempts"></b></div>
+        <div class="row"><span>تاریخ و ساعت</span><b id="rDate"></b></div>
+      </div>
+      <div class="lockStatus"></div>
+      <div class="top-actions">
+        <button class="btn answerKeyBtn" onclick="openAnswerKey()" disabled>🔒 پاسخنامه</button>
+        <button class="btn ghost" onclick="backToStart()">شروع مجدد</button>
+      </div>
+    </section>
+
+    <!-- ========== صفحه پاسخنامه ========== -->
+    <section id="screen-key" class="screen">
+      <h1>📖 پاسخنامه تشریحی</h1>
+      <p class="sub">پاسخ کامل هر سوال همراه با توضیح</p>
+      <div id="keyBox"></div>
+      <button class="btn full" onclick="showScreen('screen-result')">بازگشت به کارنامه</button>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   سوالات را اینجا وارد کنید
+   answer : شماره گزینه درست (۰=الف ، ۱=ب ، ۲=ج ، ۳=د)
+   ===================================================================== */
+const QUESTIONS = [
+  { q:"پایتخت ایران کدام شهر است؟",
+    options:["تهران","اصفهان","مشهد","شیراز"], answer:0,
+    explain:"تهران از سال ۱۱۶۴ خورشیدی (دورهٔ آقامحمدخان قاجار) پایتخت ایران شد و تا امروز پایتخت باقی مانده است." },
+
+  { q:"بزرگ‌ترین سیارهٔ منظومهٔ شمسی کدام است؟",
+    options:["زمین","مشتری","زحل","نپتون"], answer:1,
+    explain:"مشتری با قطر حدود ۱۴۳٬۰۰۰ کیلومتر بزرگ‌ترین سیارهٔ منظومهٔ شمسی است." },
+
+  { q:"حاصل ضرب ۷ × ۸ کدام است؟",
+    options:["۴۸","۵۴","۵۶","۶۴"], answer:2,
+    explain:"۷ × ۸ = ۵۶ ." },
+
+  { q:"آب خالص در چند درجهٔ سلسیوس می‌جوشد؟",
+    options:["۵۰","۸۰","۹۰","۱۰۰"], answer:3,
+    explain:"در فشار استاندارد ۱ اتمسفر، آب خالص در ۱۰۰ درجهٔ سلسیوس می‌جوشد." },
+
+  { q:"نویسندهٔ کتاب «گلستان» کیست؟",
+    options:["سعدی","حافظ","فردوسی","مولوی"], answer:0,
+    explain:"شیخ مصلح‌الدین سعدی شیرازی گلستان را در سال ۶۵۶ هجری قمری نوشت." },
+
+  { q:"بزرگ‌ترین اقیانوس جهان کدام است؟",
+    options:["اقیانوس اطلس","اقیانوس هند","اقیانوس آرام","اقیانوس منجمد شمالی"], answer:2,
+    explain:"اقیانوس آرام با مساحتی حدود ۱۶۵ میلیون کیلومتر مربع بزرگ‌ترین اقیانوس زمین است." },
+
+  { q:"یک چندضلعی با ۵ ضلع چه نام دارد؟",
+    options:["مربع","پنج‌ضلعی","شش‌ضلعی","مثلث"], answer:1,
+    explain:"چندضلعی با ۵ ضلع، پنج‌ضلعی (پنتاگون) نامیده می‌شود." },
+
+  { q:"واحد اندازه‌گیری نیرو در سیستم بین‌المللی کدام است؟",
+    options:["ژول","وات","پاسکال","نیوتن"], answer:3,
+    explain:"نیوتن واحد نیرو است و برابر نیرویی است که به جرم ۱ کیلوگرم شتاب ۱ m/s² می‌دهد." },
+
+  { q:"کدام سیاره به «سیارهٔ سرخ» معروف است؟",
+    options:["مریخ","زهره","عطارد","مشتری"], answer:0,
+    explain:"مریخ به دلیل اکسید آهن فراوان در خاکش رنگ سرخ دارد." },
+
+  { q:"پایتخت کشور فرانسه کدام شهر است؟",
+    options:["لندن","پاریس","برلین","رم"], answer:1,
+    explain:"پاریس پایتخت و بزرگ‌ترین شهر فرانسه است." },
+
+  { q:"حاصل تقسیم ۱۲ ÷ ۳ کدام است؟",
+    options:["۳","۴","۵","۶"], answer:1,
+    explain:"۱۲ ÷ ۳ = ۴ ، چون ۳ × ۴ = ۱۲ ." },
+
+  { q:"بیشترین سهم گازهای جوّ زمین مربوط به کدام گاز است؟",
+    options:["اکسیژن","دی‌اکسید کربن","نیتروژن","آرگون"], answer:2,
+    explain:"حدود ۷۸٪ جوّ زمین از نیتروژن تشکیل شده است." },
+
+  { q:"بنیان‌گذار مکتب «مشاء» در فلسفهٔ اسلامی چه کسی است؟",
+    options:["ابن‌سینا","فارابی","ملاصدرا","غزالی"], answer:1,
+    explain:"ابونصر فارابی (معلم ثانی) مکتب مشاء را در جهان اسلام بنیان نهاد." },
+
+  { q:"عنصر اصلی تشکیل‌دهندهٔ الماس چیست؟",
+    options:["سیلیس","کربن","آهن","کلسیم"], answer:1,
+    explain:"الماس شکل دگرگون‌شدهٔ کربن خالص است." },
+
+  { q:"بزرگ‌ترین کشور جهان از نظر وسعت کدام است؟",
+    options:["چین","کانادا","آمریکا","روسیه"], answer:3,
+    explain:"روسیه با وسعتی حدود ۱۷ میلیون کیلومتر مربع بزرگ‌ترین کشور جهان است." }
+];
+
+/* ==================== تنظیمات ==================== */
+const LOCK_HOURS    = 2;                                  // قفل پاسخنامه: ۲ ساعت
+const LOCK_MS       = LOCK_HOURS * 60 * 60 * 1000;
+const QUIZ_MINUTES  = 25;                                 // زمان آزمون: ۲۵ دقیقه
+const QUIZ_MS       = QUIZ_MINUTES * 60 * 1000;
+
+const K_START       = 'azmoon_start_time';                // زمان اولین شروع (فقط یک‌بار ثبت می‌شود)
+const K_ATTEMPTS    = 'azmoon_attempts';                  // تعداد دفعات انجام
+
+/* ==================== متغیرهای جاری ==================== */
+let studentName    = '';
+let current        = 0;
+let userAnswers    = new Array(QUESTIONS.length).fill(null);
+let timerInterval  = null;
+let quizDeadline   = 0;
+let quizActive     = false;
+
+/* ==================== ابزار کمکی ==================== */
+const toFa = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const LETTERS = ['الف','ب','ج','د'];
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function fmtRemain(ms){
+  const t = Math.ceil(ms/1000);
+  const h = Math.floor(t/3600), m = Math.floor((t%3600)/60), s = t%60;
+  const parts = [];
+  if(h) parts.push(`${h} ساعت`);
+  if(m) parts.push(`${m} دقیقه`);
+  parts.push(`${s} ثانیه`);
+  return toFa(parts.join(' و '));
+}
+
+function fmtClock(ms){
+  const t = Math.max(0, Math.ceil(ms/1000));
+  const m = Math.floor(t/60), s = t%60;
+  return toFa(String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'));
+}
+
+/* ==================== مدیریت قفل پاسخنامه ==================== */
+function unlockTime(){
+  const st = Number(localStorage.getItem(K_START) || 0);
+  return st ? st + LOCK_MS : 0;
+}
+function isUnlocked(){
+  const ut = unlockTime();
+  return ut > 0 && Date.now() >= ut;
+}
+
+function updateLockUI(){
+  const boxes = document.querySelectorAll('.lockStatus');
+  const unlocked = isUnlocked();
+  let msg;
+
+  if(!localStorage.getItem(K_START)){
+    msg = '🔒 پاسخنامه ۲ ساعت بعد از اولین شروع آزمون فعال می‌شود.';
+  } else if(unlocked){
+    msg = '✅ پاسخنامه فعال شد.';
+  } else {
+    msg = '🔒 پاسخنامه تا ' + fmtRemain(unlockTime() - Date.now()) + ' دیگر فعال می‌شود.';
+  }
+
+  boxes.forEach(b => {
+    b.textContent = msg;
+    b.style.background  = unlocked ? '#dcfce7' : '#fff7ed';
+    b.style.color       = unlocked ? '#166534' : '#9a3412';
+    b.style.borderColor = unlocked ? '#86efac' : '#fed7aa';
+  });
+
+  document.querySelectorAll('.answerKeyBtn').forEach(btn => {
+    btn.disabled = !unlocked;
+    btn.textContent = unlocked ? '📖 مشاهده پاسخنامه' : '🔒 پاسخنامه (قفل)';
+  });
+}
+
+/* ==================== تایمر آزمون ==================== */
+function startTimer(){
+  clearInterval(timerInterval);
+  quizDeadline = Date.now() + QUIZ_MS;
+  quizActive   = true;
+  tickTimer();
+  timerInterval = setInterval(tickTimer, 500);
+}
+
+function tickTimer(){
+  if(!quizActive) return;
+  const left = quizDeadline - Date.now();
+  const box  = document.getElementById('timerBox');
+  box.textContent = '⏱ ' + fmtClock(left);
+  box.classList.toggle('warn', left <= 60 * 1000);
+  if(left <= 0){
+    quizActive = false;
+    clearInterval(timerInterval);
+    finishQuiz(true);   // پایان خودکار
+  }
+}
+
+function stopTimer(){
+  quizActive = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+/* ==================== جریان آزمون ==================== */
+function startQuiz(){
+  const name = document.getElementById('nameInput').value.trim();
+  if(!name){ alert('لطفاً نام و نام خانوادگی خود را وارد کنید.'); return; }
+
+  studentName = name;
+
+  // زمان اولین شروع فقط یک‌بار ثبت می‌شود → بازی مجدد قفل را باز نمی‌کند
+  if(!localStorage.getItem(K_START)){
+    localStorage.setItem(K_START, Date.now());
+  }
+
+  current = 0;
+  userAnswers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('timerBox').classList.remove('warn');
+
+  updateLockUI();
+  showScreen('screen-quiz');
+  renderQuestion();
+  startTimer();
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[current];
+
+  document.getElementById('qCounter').textContent =
+    `سوال ${toFa(current+1)} از ${toFa(QUESTIONS.length)}`;
+  document.getElementById('progressBar').style.width =
+    ((current+1) / QUESTIONS.length * 100) + '%';
+
+  document.getElementById('qText').innerHTML = q.q;
+
+  const box = document.getElementById('optionsBox');
+  box.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const d = document.createElement('div');
+    d.className = 'option' + (userAnswers[current] === i ? ' selected' : '');
+    d.innerHTML = `<span class="badge">${LETTERS[i]}</span><span>${opt}</span>`;
+    d.onclick = () => { userAnswers[current] = i; renderQuestion(); };
+    box.appendChild(d);
+  });
+
+  document.getElementById('prevBtn').disabled = (current === 0);
+  document.getElementById('nextBtn').style.display   = (current === QUESTIONS.length-1) ? 'none' : 'inline-block';
+  document.getElementById('finishBtn').style.display = (current === QUESTIONS.length-1) ? 'inline-block' : 'none';
+}
+
+function goPrev(){ if(current > 0){ current--; renderQuestion(); } }
+function goNext(){ if(current < QUESTIONS.length-1){ current++; renderQuestion(); } }
+
+function finishQuiz(auto){
+  stopTimer();
+
+  if(!auto){
+    const empty = userAnswers.filter(a => a === null).length;
+    if(empty > 0 && !confirm(`${toFa(empty)} سوال بی‌پاسخ مانده است. آیا از پایان آزمون مطمئن هستید؟`)) {
+      // اگر منصرف شد، تایمر را دوباره راه بینداز
+      if(quizDeadline > Date.now()){
+        quizActive = true;
+        timerInterval = setInterval(tickTimer, 500);
+      }
+      return;
+    }
+  } else {
+    alert('⏰ زمان آزمون به پایان رسید. پاسخ‌های شما به‌صورت خودکار ثبت شد.');
+  }
+
+  let correct = 0;
+  userAnswers.forEach((a, i) => { if(a === QUESTIONS[i].answer) correct++; });
+
+  const wrong   = userAnswers.filter((a,i) => a !== null && a !== QUESTIONS[i].answer).length;
+  const empty   = userAnswers.filter(a => a === null).length;
+  const percent = Math.round(correct / QUESTIONS.length * 100);
+  const score   = Math.round(correct / QUESTIONS.length * 20 * 100) / 100;
+
+  const attempts = Number(localStorage.getItem(K_ATTEMPTS) || 0) + 1;
+  localStorage.setItem(K_ATTEMPTS, attempts);
+
+  document.getElementById('resultName').textContent = `دانش‌آموز: ${studentName}`;
+  document.getElementById('scoreNum').textContent   = toFa(score);
+  document.getElementById('rCorrect').textContent   = `${toFa(correct)} از ${toFa(QUESTIONS.length)}`;
+  document.getElementById('rWrong').textContent     = toFa(wrong);
+  document.getElementById('rEmpty').textContent     = toFa(empty);
+  document.getElementById('rPercent').textContent   = toFa(percent) + '٪';
+  document.getElementById('rAttempts').textContent  = toFa(attempts) + ' بار';
+
+  const now = new Date();
+  document.getElementById('rDate').textContent =
+    now.toLocaleDateString('fa-IR') + ' - ' +
+    toFa(now.toLocaleTimeString('fa-IR', {hour:'2-digit', minute:'2-digit'}));
+
+  updateLockUI();
+  showScreen('screen-result');
+}
+
+function backToStart(){
+  stopTimer();
+  userAnswers = new Array(QUESTIONS.length).fill(null);
+  current = 0;
+  document.getElementById('nameInput').value = studentName;
+  updateLockUI();
+  showScreen('screen-start');
+}
+
+/* ==================== پاسخنامه ==================== */
+function openAnswerKey(){
+  if(!isUnlocked()){
+    if(!localStorage.getItem(K_START)){
+      alert('ابتدا باید تمرین را شروع کنید.');
+    } else {
+      alert('پاسخنامه تا ' + fmtRemain(unlockTime() - Date.now()) + ' دیگر فعال می‌شود.');
+    }
+    return;
+  }
+
+  const box = document.getElementById('keyBox');
+  box.innerHTML = '';
+
+  QUESTIONS.forEach((q, i) => {
+    const ua = userAnswers[i];
+    const div = document.createElement('div');
+    div.className = 'ak-item';
+
+    let html = `<div class="ak-q">${toFa(i+1)}) ${q.q}</div>`;
+
+    q.options.forEach((opt, j) => {
+      let cls = 'ak-opt';
+      let tag = '';
+      if(j === q.answer){ cls += ' correct'; tag = '<span class="tag ok">پاسخ صحیح</span>'; }
+      else if(j === ua){ cls += ' wrong';  tag = '<span class="tag no">پاسخ شما</span>'; }
+      html += `<div class="${cls}">${LETTERS[j]}) ${opt} ${tag}</div>`;
+    });
+
+    if(ua === null){
+      html += `<div class="ak-exp" style="background:#fef2f2;color:#991b1b;border-color:#dc2626">⚠️ شما به این سوال پاسخ نداده‌اید.</div>`;
+    }
+
+    html += `<div class="ak-exp"><b>توضیح:</b> ${q.explain}</div>`;
+    div.innerHTML = html;
+    box.appendChild(div);
+  });
+
+  showScreen('screen-key');
+}
+
+/* ==================== بازنشانی ==================== */
+function resetAll(){
+  if(!confirm('همهٔ اطلاعات (زمان اولین شروع، تعداد دفعات، قفل پاسخنامه) پاک شود؟')) return;
+  localStorage.removeItem(K_START);
+  localStorage.removeItem(K_ATTEMPTS);
+  stopTimer();
+  userAnswers = new Array(QUESTIONS.length).fill(null);
+  current = 0;
+  updateLockUI();
+  alert('اطلاعات بازنشانی شد.');
+}
+
+/* ==================== راه‌اندازی ==================== */
+setInterval(updateLockUI, 1000);
+updateLockUI();
+</script>
+</body>
+  </html>
